@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S𝖍𝖚𝖒𝖆𝖈 C𝖔𝖋𝖋𝖊𝖆 | Order Online</title>
+    <style>
+        :root { --primary: #6f4e37; --dark: #3e2a1a; --light: #fdfaf7; --success: #27ae60; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--light); margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        
+        header { background: var(--dark); color: white; text-align: center; padding: 15px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        
+        /* Qaybta Logada lagu daray */
+        .logo-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+        .shumac-logo {
+            width: 50px; /* Cabbirka logada */
+            height: 50px;
+            border-radius: 50%; /* Inay wareeg noqoto */
+            object-fit: cover;
+            border: 2px solid #fff;
+        }
+
+        .layout { display: flex; flex: 1; overflow: hidden; padding: 20px; gap: 20px; }
+        
+        /* Menu Section */
+        .menu-container { flex: 3; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; padding-right: 10px; }
+        .card { background: white; border-radius: 12px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; border: 1px solid #eee; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); }
+        .card img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; }
+        .card h4 { margin: 10px 0 5px; color: var(--dark); }
+        .price { color: var(--success); font-weight: bold; margin-bottom: 10px; display: block; }
+        
+        /* Cart Section */
+        .cart-panel { flex: 1; background: white; border-radius: 12px; padding: 20px; box-shadow: -2px 0 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; min-width: 320px; border: 1px solid #ddd; }
+        .cart-items { flex: 1; overflow-y: auto; border-bottom: 2px solid #eee; margin-bottom: 15px; }
+        .item-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #eee; font-size: 0.95em; }
+        
+        button { background: var(--primary); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; }
+        button:hover { background: var(--dark); }
+        .btn-checkout { background: var(--success); padding: 15px; font-size: 1.1em; margin-top: 10px; }
+
+        @media (max-width: 768px) {
+            .layout { flex-direction: column; overflow: visible; }
+            .cart-panel { min-width: unset; height: auto; margin-top: 20px; }
+            .menu-container { overflow-y: visible; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-box">
+        <!-- Halkan gasho sawirka logadaada magaciisa (tusaale: logo.png) -->
+        <img src="S𝖍𝖚𝖒𝖆𝖈 C𝖔𝖋𝖋𝖊𝖆.png" alt="Logo" class="shumac-logo"> 
+        <h1>S𝖍𝖚𝖒𝖆𝖈 C𝖔𝖋𝖋𝖊𝖆 Shop</h1>
+    </div>
+    <p>Dalbo hadda - Waxaan kugu diyaarinaynaa 15 daqiiqo!</p>
+</header>
+
+<div class="layout">
+    <div class="menu-container" id="menu-grid"></div>
+
+    <div class="cart-panel">
+        <h2 style="color: var(--dark); margin-top: 0;">Dalabkaaga</h2>
+        <div class="cart-items" id="cart-list">
+            <p style="color: #999; text-align: center; margin-top: 50px;">Gaadhigu waa madhan yahay...</p>
+        </div>
+        <div style="font-size: 1.5em; font-weight: bold; margin: 15px 0; color: var(--dark);">
+            Total: $<span id="total-price">0.00</span>
+        </div>
+        <button class="btn-checkout" onclick="checkout()">🚀 Dhameystir & WhatsApp u dir</button>
+    </div>
+</div>
+
+<script>
+    const products = [
+        { id: 1, name: "Espresso", price: 2.50, img: "Espresso.jfif?w=200" },
+        { id: 2, name: "Cappuccino", price: 3.50, img: "Cappuccino.jfif?w=200" },
+        { id: 3, name: "Latte", price: 3.80, img: "Latte.jfif?w=200" },
+        { id: 4, name: "Iced Latte", price: 4.00, img: "Iced Coffee.png?w=200" },
+        { id: 5, name: "Mocha", price: 4.20, img: "moccha coffee.png?w=200" },
+        { id: 6, name: "Americano", price: 3.00, img: "Americano.jfif?w=200" },
+        { id: 7, name: "Flat White", price: 3.70, img: "https://images.unsplash.com/photo-1577968897966-3d4325b36b61?w=200" },
+        { id: 8, name: "Macchiato", price: 3.20, img: "Macchiato.jfif?w=200" },
+        { id: 9, name: "Turkish Coffee", price: 2.80, img: "Turkish Coffee.jfif?w=200" },
+        { id: 10, name: "Caramel Latte", price: 4.50, img: "Caramel Latte.jfif?w=200" },
+        { id: 11, name: "V60 Drip", price: 5.00, img: "V60 Drip.jfif?w=200" },
+        { id: 12, name: "Cold Brew", price: 4.50, img: "Cold Brew.jfif?w=200" },
+        { id: 13, name: "Hot Chocolate", price: 3.50, img: "Hot Chocolate.jfif?w=200" },
+        { id: 14, name: "Spanish Latte", price: 4.80, img: "Spanish Latte.jfif?w=200" },
+        { id: 15, name: "Affogato", price: 5.50, img: "Affogato.jfif?w=200" },
+        { id: 16, name: "Cortado", price: 3.40, img: "Cortado.jfif?w=200" },
+        { id: 17, name: "Vanilla Frappe", price: 5.20, img: "Vanilla Frappe.jfif?w=200" },
+        { id: 18, name: "Croissant", price: 2.00, img: "Croissant.jfif?w=200" },
+        { id: 19, name: "Brownie Slice", price: 3.00, img: "Brownie Slice.jfif?w=200" },
+        { id: 20, name: "Black Tea", price: 1.50, img: "Black Tea.jfif?w=200" }
+    ];
+
+    let cart = [];
+    let total = 0;
+
+    function initMenu() {
+        const grid = document.getElementById('menu-grid');
+        products.forEach(p => {
+            grid.innerHTML += `
+                <div class="card">
+                    <img src="${p.img}" alt="${p.name}">
+                    <h4>${p.name}</h4>
+                    <span class="price">$${p.price.toFixed(2)}</span>
+                    <button onclick="addToCart('${p.name}', ${p.price})">Ku dar</button>
+                </div>
+            `;
+        });
+    }
+
+    function addToCart(name, price) {
+        cart.push({ name, price });
+        total += price;
+        updateUI();
+    }
+
+    function updateUI() {
+        const list = document.getElementById('cart-list');
+        const totalDisp = document.getElementById('total-price');
+        
+        if (cart.length === 0) {
+            list.innerHTML = '<p style="color: #999; text-align: center; margin-top: 50px;">Gaadhigu waa madhan yahay...</p>';
+        } else {
+            list.innerHTML = cart.map(item => `
+                <div class="item-row">
+                    <span>${item.name}</span>
+                    <span>$${item.price.toFixed(2)}</span>
+                </div>
+            `).join('');
+        }
+        totalDisp.innerText = total.toFixed(2);
+    }
+
+    function checkout() {
+        if (cart.length === 0) {
+            alert("Fadlan dooro ugu yaraan hal kafee!");
+            return;
+        }
+
+        const numberkaaga = "252617213867"; 
+        
+        let msg = "*DALAB CUSUB - S𝖍𝖚𝖒𝖆𝖈 C𝖔𝖋𝖋𝖊𝖆*\n--------------------------\n";
+        cart.forEach((item, i) => {
+            msg += `${i + 1}. ${item.name} - $${item.price.toFixed(2)}\n`;
+        });
+        msg += `--------------------------\n💰 *Wadarta: $${total.toFixed(2)}*\n🕒 *Waqtiga: 15 Daqiiqo gudahood*`;
+
+        const url = `https://wa.me/${numberkaaga}?text=${encodeURIComponent(msg)}`;
+
+        alert(`Mahadsanid! Wadarta waa $${total.toFixed(2)}. Waxaan kugu diyaarinaynaa 15 daqiiqo gudahood. Hadda waxaa laguu wareejinayaa WhatsApp-ka.`);
+        
+        window.open(url, '_blank');
+        
+        cart = []; total = 0; updateUI();
+    }
+
+    initMenu();
+</script>
+
+</body>
+</html>
